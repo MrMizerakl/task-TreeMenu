@@ -114,12 +114,15 @@ a.desc:after {
     outline: none;
 }
 
+.tm-root li {
+    list-style-type: none;
+}
+
 .tm-parent{
-    padding: 10px 0;
+    margin: 10px 0;
 }
 
 .tm-name {
-    border: solid 1px black;
     padding: 3px;
     font-size: 14px;
 }
@@ -132,3 +135,9 @@ a.desc:after {
 .tm-hidden {
     display: none;
 }
+
+.tm-group {
+    text-decoration: underline;
+    cursor: pointer;
+}
+

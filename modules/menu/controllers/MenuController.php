@@ -84,7 +84,7 @@ class MenuController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ( $model->load( Yii::$app->request->post() ) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
@@ -101,8 +101,8 @@ class MenuController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->deleteChild($id);
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 
@@ -121,4 +121,16 @@ class MenuController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    protected function deleteChild($id)
+    {
+        $arr = Menu::find()->select('id')->where(['parent'=>$id])->asArray()->all();
+        if( count($arr) ){
+            foreach ($arr as $value) {
+                $this->deleteChild($value['id']);
+            }
+        }
+        Menu::deleteAll(['parent'=>$id]);
+    }
+
 }

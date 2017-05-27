@@ -49,4 +49,10 @@ class Menu extends \yii\db\ActiveRecord
             'isgroup' => 'Isgroup',
         ];
     }
+
+    public function getCountChild()
+    {
+        $arr = Menu::find()->select('count(*) as zn')->where(['parent' => $this->id])->asArray()->all();
+        return $arr[0]['zn'];
+    }
 }

@@ -16,10 +16,39 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $model = new Menu();
-        $items = $model::find()->select('id, name, url, parent, isgroup')->orderBy('isgroup desc, parent, name')->asArray()->all();
+        $treemenu = $this->getTreeMenu();
         return $this->render('index', [
-            'model' => $items,
+            'treemenu' => $treemenu,
         ]);
+    }
+
+    protected function getTreeMenu()
+    {
+        $rootlevel = Menu::find()->select('id, name, url, parent, isgroup')->where(['parent' => Null])->orderBy('name')->asArray()->all();
+        $result ='';
+        if(count($rootlevel)){
+            $result .= '<ul class="tm-parent">';
+            foreach ($rootlevel as $item){
+                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. $item['name']. ($item['url'] ? '&nbsp;<span class="tm-url">'. $item['url']. '</span>' : '').  '</li>';
+                $result .= $this->getTreeMenuChild($item['id']);
+            }
+            $result .= '</ul>';
+        }
+        return $result;
+    }
+
+    protected function getTreeMenuChild($id)
+    {
+        $child = Menu::find()->select('id, name, url, parent, isgroup')->where(['parent' => $id])->orderBy('isgroup desc, name')->asArray()->all();
+        $result = '';
+        if(count($child)){
+            $result .= '<ul class="tm-hidden tm-parent">';
+            foreach ($child as $item){
+                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. $item['name']. ($item['url'] ? '&nbsp;<span class="tm-url">'. $item['url']. '</span>' : '').  '</li>';
+                $result .= $this->getTreeMenuChild($item['id']);
+            }
+            $result .= '</ul>';
+        }
+        return $result;
     }
 }
