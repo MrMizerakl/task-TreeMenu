@@ -17,7 +17,7 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $model = new Menu();
-        $items = $model::find()->select('id, name, parent, isgroup')->orderBy('isgroup desc, parent, name')->asArray()->all();
+        $items = $model::find()->select('id, name, url, parent, isgroup')->orderBy('isgroup desc, parent, name')->asArray()->all();
         return $this->render('index', [
             'model' => $items,
         ]);

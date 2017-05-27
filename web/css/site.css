@@ -113,3 +113,22 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.tm-parent{
+    padding: 10px 0;
+}
+
+.tm-name {
+    border: solid 1px black;
+    padding: 3px;
+    font-size: 14px;
+}
+
+.tm-url {
+    color: red;
+    font-size: 12px;
+}
+
+.tm-hidden {
+    display: none;
+}
