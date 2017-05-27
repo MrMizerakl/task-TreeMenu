@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -16,9 +17,26 @@ $this->params['breadcrumbs'][] = $this->title;
 <!--    <h1>--><?php //= Html::encode($this->title) ?><!--</h1>-->
 
     <p class="text-right">
-        <?= Html::a('Add Menu Item', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(
+            'Add Menu Item',
+            ['create'],
+            [
+                'id' => 'tree-menu-btn-add',
+                'class' => 'btn btn-success',
+                'data' => [
+                    'target' => '#w0',
+                    'toggle' => 'modal',
+                    'backdrop' => 'static',
+                ],
+            ]) ?>
     </p>
-<?php Pjax::begin(); ?>    <?= GridView::widget([
+<?php Modal::begin([
+    'header' => '<span></span>',
+]); ?>
+    <div id="tree-menu-edit-data"></div>
+<?php Modal::end(); ?>
+<?php Pjax::begin(['id'=>'tree-menu-table']); ?>
+    <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -35,6 +53,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => [
                     'width' => '10%'
                 ],
+                'contentOptions' => [
+                    'align' => 'center',
+                ],
             ],
                 [
                     'attribute' => 'isgroup',
@@ -42,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'width' => '10%',
                     ],
                     'contentOptions' => [
-                        'text-align' => 'center',
+                        'align' => 'center',
                     ],
                 ],
             [
@@ -53,27 +74,39 @@ $this->params['breadcrumbs'][] = $this->title;
                     'text-align' => 'center',
                 ],
                 'buttons' => [
+                    'update' => function ($url,$model,$key) {
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-pencil"></span>',
+                            $url,
+                            [
+                                'title' => 'Update',
+                                'data' => [
+                                    'target' => '#w0',
+                                    'toggle' => 'modal',
+                                    'backdrop' => 'static',
+                                ],
+                            ]
+                        );
+                    },
                     'delete' => function ($url,$model,$key){
-                        if( $model->countChild > 0 ){
-                            return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url,
-                                [
-                                    'title' => Yii::t('yii', 'Delete'),
-                                    'aria-label' => Yii::t('yii', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Category not empty, are you sure you want to delete this category?'),
-                                    'data-method' => 'post',
-                                    'data-pjax' => '0',
-                                ]
-                            );
-                        } else {
-                            return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url,
-                                [
-                                    'title' => Yii::t('yii', 'Delete'),
-                                    'aria-label' => Yii::t('yii', 'Delete'),
-                                    'data-method' => 'post',
-                                    'data-pjax' => '0',
-                                ]
-                            );
-                        }
+
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-trash"></span>',
+                            '#',
+                            [
+                                'title' => 'Delete',
+                                'aria-label' => 'Delete',
+                                'onclick' => "
+if (confirm('Category not empty, are you sure you want to delete this category?')) {
+    $.ajax('". $url. "', {
+        type: 'POST'
+    }).done(function(data) {
+        $.pjax.reload({container: '#tree-menu-table'});
+    });
+}
+return false;",
+                            ]
+                        );
                     }
                  ],
             ],
@@ -87,3 +120,70 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 <?php Pjax::end(); ?></div>
+
+<?php
+
+$js = <<<JS
+jQuery('body').on('click', 'a[href*="update"]', function(e){
+   
+    jQuery.ajax({
+        url: this,                             
+        dataType : 'html',                     
+        success: function (data) {
+            jQuery('.modal-header span').html( 'Update item menu' );
+            jQuery('#tree-menu-edit-data').html(data);
+        },
+        error: function (data) {
+            console.log('error load Ajax');
+        }
+    });
+}); 
+
+jQuery('body').on('click', 'a[href*="create"]', function(e){   
+
+    jQuery.ajax({
+        url: this,                             
+        dataType : 'html',                     
+        success: function (data) {
+            jQuery('.modal-header span').html( 'Create new item menu' );
+            jQuery('#tree-menu-edit-data').html(data);
+        },
+        error: function (data) {
+            console.log('error load Ajax');
+        }
+    });
+});
+
+ jQuery('body').on('click','#tree-menu-btn-submit',function(e){
+    e.preventDefault();
+    var form = jQuery(this).closest('form');
+    jQuery.post(
+        form.attr("action"),
+        form.serialize()
+    )
+    .success(function(result) {
+        if ( result.success == 'formSave' ) {
+            jQuery('#edict-edit-child').html( 'Item save' );
+            jQuery.pjax.reload( {container: '#tree-menu-table' } );
+            setTimeout( function() { 
+                jQuery('#w0').modal('hide');
+                }, 500);
+        } else {
+         jQuery.each(result, function(key, val) {
+            form.yiiActiveForm('updateAttribute', key, [val]);
+          });
+        }  
+    })
+    .error(function(){
+        jQuery('#edict-edit-child').html( 'Error' );
+        setTimeout( function() { 
+            jQuery('#w0').modal('hide');
+            }, 1000);
+    })
+    ;
+    // return false;
+}); 
+
+JS;
+
+$this->registerJs($js);

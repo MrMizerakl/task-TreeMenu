@@ -5,9 +5,12 @@ namespace app\modules\menu\controllers;
 use Yii;
 use app\models\Menu;
 use app\models\Search\MenuSearch;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * MenuController implements the CRUD actions for Menu model.
@@ -49,12 +52,12 @@ class MenuController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+//    public function actionView($id)
+//    {
+//        return $this->render('view', [
+//            'model' => $this->findModel($id),
+//        ]);
+//    }
 
     /**
      * Creates a new Menu model.
@@ -63,12 +66,22 @@ class MenuController extends Controller
      */
     public function actionCreate()
     {
+        if (!Yii::$app->request->isAjax) {
+            return $this->redirect(Url::to(['/site/error']));
+        }
+
         $model = new Menu();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if ( $model->load( Yii::$app->request->post() ) ) {
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if( $model->save() ){
+                return ['success' => 'formSave'];
+            }
+            return ActiveForm::validate($model);
+
         } else {
-            return $this->render('create', [
+            return $this->renderAjax('create', [
                 'model' => $model,
             ]);
         }
@@ -82,12 +95,22 @@ class MenuController extends Controller
      */
     public function actionUpdate($id)
     {
+        if (!Yii::$app->request->isAjax) {
+            return $this->redirect(Url::to(['/site/error']));
+        }
+
         $model = $this->findModel($id);
 
-        if ( $model->load( Yii::$app->request->post() ) && $model->save()) {
-            return $this->redirect(['index']);
+        if ( $model->load( Yii::$app->request->post() ) ) {
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if( $model->save() ){
+                return ['success' => 'formSave'];
+            }
+            return ActiveForm::validate($model);
+
         } else {
-            return $this->render('update', [
+            return $this->renderAjax('update', [
                 'model' => $model,
             ]);
         }
@@ -101,9 +124,13 @@ class MenuController extends Controller
      */
     public function actionDelete($id)
     {
+        if (!Yii::$app->request->isAjax) {
+            return $this->redirect(Url::to(['/site/error']));
+        }
+
         $this->deleteChild($id);
         $this->findModel($id)->delete();
-        return $this->redirect(['index']);
+        return true; // $this->redirect(['index']);
     }
 
     /**

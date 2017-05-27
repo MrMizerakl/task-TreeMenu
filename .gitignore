@@ -39,3 +39,5 @@ views/site/about.php
 views/site/contact.php
 views/site/index.php
 views/site/login.php
+
+composer.lock
