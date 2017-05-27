@@ -6,6 +6,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
@@ -36,8 +37,8 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Show', 'url' => ['/menu/default/index']],
-            ['label' => 'Edit', 'url' => ['/menu/menu/index']],
+            ['label' => 'Show', 'url' => Url::to(['/menu/default/index'])],
+            ['label' => 'Edit', 'url' => Url::to(['/menu/menu/index'])],
         ],
     ]);
     NavBar::end();

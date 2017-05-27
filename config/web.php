@@ -44,6 +44,8 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'show' => 'menu/default/index',
+                'edit' => 'menu/menu/index'
             ],
         ],
     ],

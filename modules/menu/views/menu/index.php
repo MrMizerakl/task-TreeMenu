@@ -96,14 +96,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'title' => 'Delete',
                                 'aria-label' => 'Delete',
-                                'onclick' => "
-if (confirm('Category not empty, are you sure you want to delete this category?')) {
+                                'onclick' =>
+($model->countChild>0 ? "if (confirm('Category not empty, are you sure you want to delete this category?')) {" : "") . "
     $.ajax('". $url. "', {
         type: 'POST'
     }).done(function(data) {
         $.pjax.reload({container: '#tree-menu-table'});
     });
-}
+". ($model->countChild>0 ? "}" : "") ."
 return false;",
                             ]
                         );
@@ -163,7 +163,7 @@ jQuery('body').on('click', 'a[href*="create"]', function(e){
     )
     .success(function(result) {
         if ( result.success == 'formSave' ) {
-            jQuery('#edict-edit-child').html( 'Item save' );
+            jQuery('#tree-menu-edit-data').html( 'Item save' );
             jQuery.pjax.reload( {container: '#tree-menu-table' } );
             setTimeout( function() { 
                 jQuery('#w0').modal('hide');
@@ -175,7 +175,7 @@ jQuery('body').on('click', 'a[href*="create"]', function(e){
         }  
     })
     .error(function(){
-        jQuery('#edict-edit-child').html( 'Error' );
+        jQuery('#tree-menu-edit-data').html( 'Error' );
         setTimeout( function() { 
             jQuery('#w0').modal('hide');
             }, 1000);
