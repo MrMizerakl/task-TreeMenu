@@ -21,7 +21,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'parent')->dropDownList( ArrayHelper::map(Menu::find()->select(["id", "concat(id, ' - ', name,  IFNULL( concat(' (parent:', parent ,' )'), '') ) as name"])->where(['isgroup'=>1])->asArray()->all(), 'id', 'name'), ['prompt'=>''] ) ?>
+    <?= $form->field($model, 'parent')->dropDownList(
+        ArrayHelper::map(Menu::find()->
+            select(["a.id", "concat(a.id, ' - ', a.name, IFNULL( concat(' (parent:', b.name ,' )'), '') ) as name"])->
+            from(['a' => 'menu'])->
+            where(['a.isgroup'=>1])->
+            leftJoin(['menu b'], 'b.id = a.parent')->
+            asArray()->all(), 'id', 'name'),
+        ['prompt'=>''] ) ?>
 
     <?= $form->field($model, 'isgroup')->checkbox() ?>
 

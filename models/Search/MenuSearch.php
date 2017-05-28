@@ -15,11 +15,12 @@ class MenuSearch extends Menu
     /**
      * @inheritdoc
      */
+
     public function rules()
     {
         return [
             [['id', 'parent', 'isgroup'], 'integer'],
-            [['name', 'url'], 'safe'],
+            [['name', 'url', 'parentName'], 'safe'],
         ];
     }
 

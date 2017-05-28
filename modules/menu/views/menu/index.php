@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Menu;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -50,12 +51,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'url:url',
             [
                 'attribute' => 'parent',
+                'value' => 'parentSelf.name',
                 'headerOptions' => [
                     'width' => '10%'
                 ],
                 'contentOptions' => [
                     'align' => 'center',
                 ],
+                'filter' => Menu::getParentList(),
             ],
                 [
                     'attribute' => 'isgroup',

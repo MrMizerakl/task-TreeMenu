@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "menu".
@@ -50,9 +51,19 @@ class Menu extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getParentSelf()
+    {
+        return $this->hasOne(self::className(), ['id' => 'parent'])->from(self::tableName() . ' AS parent');
+    }
+
     public function getCountChild()
     {
-        $arr = Menu::find()->select('count(*) as zn')->where(['parent' => $this->id])->asArray()->all();
+        $arr = self::find()->select('count(*) as zn')->where(['parent' => $this->id])->asArray()->all();
         return $arr[0]['zn'];
+    }
+
+    public static function getParentList()
+    {
+        return ArrayHelper::map( self::find()->select('id, name')->where(['isgroup'=>1])->orderBy('name')->asArray()->all(), 'id', 'name') ;
     }
 }

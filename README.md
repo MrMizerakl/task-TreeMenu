@@ -8,7 +8,9 @@ INSTALLATION
 
 Clone you PC and run
 
-composer update
+```
+    composer update
+```
 
 CONFIGURATION
 -------------
@@ -21,5 +23,7 @@ Edit the file `config/db.php` with real data, now use:
 ```
 run migration
 
-php yii migrate
+```
+    php yii migrate
+```
 
