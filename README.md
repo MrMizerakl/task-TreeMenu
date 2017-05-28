@@ -6,7 +6,7 @@ Tree Menu editor use Yii 2 Basic Project Template
 INSTALLATION
 ------------
 
-Clone to your PC and extract
+Clone to your PC, extract and run
 
 ```
     composer update
