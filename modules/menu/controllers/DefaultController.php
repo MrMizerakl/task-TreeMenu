@@ -27,10 +27,11 @@ class DefaultController extends Controller
         $rootlevel = Menu::find()->select('id, name, url, parent, isgroup')->where(['parent' => Null])->orderBy('name')->asArray()->all();
         $result ='';
         if(count($rootlevel)){
-            $result .= '<ul class="tm-parent">';
+            $result .= '<ul class="tm-header">';
             foreach ($rootlevel as $item){
-                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. ($item['url'] ? '<a href="'. $item['url'].' ">'. $item['name']. '</a>' : $item['name'] ).  '</li>';
+                $result .= '<li class="tm-name '. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. '<a href="'. ($item['url'] ? $item['url']: '#' ).' ">'. $item['name']. '</a>' ;
                 $result .= $this->getTreeMenuChild($item['id']);
+                $result .= '</li>';
             }
             $result .= '</ul>';
         }
@@ -44,8 +45,9 @@ class DefaultController extends Controller
         if(count($child)){
             $result .= '<ul class="tm-hidden tm-parent">';
             foreach ($child as $item){
-                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. ($item['url'] ? '<a href="'. $item['url'].' ">'. $item['name']. '</a>' : $item['name'] ).  '</li>';
+                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. '<a href="'. ($item['url'] ? $item['url']: '#' ).' ">'. $item['name']. '</a>';
                 $result .= $this->getTreeMenuChild($item['id']);
+                $result .=  '</li>';
             }
             $result .= '</ul>';
         }
