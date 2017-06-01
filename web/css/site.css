@@ -116,10 +116,21 @@ a.desc:after {
 
 .tm-root li {
     list-style-type: none;
+    width: 250px;
+    background-color: #4e6cef;
+    margin: 2px;
+    border: solid 1px #2a36b1;
+    color: white;
+    padding: 3px;
+}
+
+.tm-parent a {
+    color: white;
+    text-decoration: none;
 }
 
 .tm-parent{
-    margin: 10px 0;
+    margin:  0;
 }
 
 .tm-name {
@@ -140,4 +151,3 @@ a.desc:after {
     text-decoration: underline;
     cursor: pointer;
 }
-

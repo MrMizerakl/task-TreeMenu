@@ -29,7 +29,7 @@ class DefaultController extends Controller
         if(count($rootlevel)){
             $result .= '<ul class="tm-parent">';
             foreach ($rootlevel as $item){
-                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. $item['name']. ($item['url'] ? '&nbsp;<span class="tm-url">'. $item['url']. '</span>' : '').  '</li>';
+                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. ($item['url'] ? '<a href="'. $item['url'].' ">'. $item['name']. '</a>' : $item['name'] ).  '</li>';
                 $result .= $this->getTreeMenuChild($item['id']);
             }
             $result .= '</ul>';
@@ -44,7 +44,7 @@ class DefaultController extends Controller
         if(count($child)){
             $result .= '<ul class="tm-hidden tm-parent">';
             foreach ($child as $item){
-                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. $item['name']. ($item['url'] ? '&nbsp;<span class="tm-url">'. $item['url']. '</span>' : '').  '</li>';
+                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. ($item['url'] ? '<a href="'. $item['url'].' ">'. $item['name']. '</a>' : $item['name'] ).  '</li>';
                 $result .= $this->getTreeMenuChild($item['id']);
             }
             $result .= '</ul>';
