@@ -166,7 +166,7 @@ a.desc:after {
     text-decoration: none;
 }
 
-.tm-root-menu > .tm-header {
+.tm-root-menu  .tm-header {
     position: relative;
     /*left: 0;*/
     /*top: 0;*/
@@ -174,8 +174,8 @@ a.desc:after {
 
 .tm-root-menu .tm-parent {
     position: absolute;
-    /*top: auto;*/
-    left: 200px;
+    top: 0px;
+    left: 250px;
 }
 
 .tm-root-menu a {

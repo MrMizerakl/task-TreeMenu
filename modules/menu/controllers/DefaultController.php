@@ -25,12 +25,15 @@ class DefaultController extends Controller
     protected function getTreeMenu()
     {
         $rootlevel = Menu::find()->select('id, name, url, parent, isgroup')->where(['parent' => Null])->orderBy('name')->asArray()->all();
-        $result ='';
+        $result =''; $tmp = '';
         if(count($rootlevel)){
             $result .= '<ul class="tm-header">';
             foreach ($rootlevel as $item){
-                $result .= '<li class="tm-name '. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. '<a href="'. ($item['url'] ? $item['url']: '#' ).' ">'. $item['name']. '</a>' ;
-                $result .= $this->getTreeMenuChild($item['id']);
+                $tmp = '';
+                $tmp = $this->getTreeMenuChild($item['id']);;
+                $result .= '<li class="tm-name '. ( $item['isgroup'] ? ' tm-group' : '' ) .( $tmp ? ' tm-header' : '' ) . '">'. '<a href="'. ($item['url'] ? $item['url']: '#' ).' ">'. $item['name']. '</a>' ;
+                //$result .= $this->getTreeMenuChild($item['id']);
+                $result .= $tmp;
                 $result .= '</li>';
             }
             $result .= '</ul>';
@@ -45,8 +48,12 @@ class DefaultController extends Controller
         if(count($child)){
             $result .= '<ul class="tm-hidden tm-parent">';
             foreach ($child as $item){
-                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) . '">'. '<a href="'. ($item['url'] ? $item['url']: '#' ).' ">'. $item['name']. '</a>';
-                $result .= $this->getTreeMenuChild($item['id']);
+                $tmp = '';
+                $tmp = $this->getTreeMenuChild($item['id']);;
+
+                $result .= '<li class="tm-name'. ( $item['isgroup'] ? ' tm-group' : '' ) .( $tmp ? ' tm-header' : '' ) .  '">'. '<a href="'. ($item['url'] ? $item['url']: '#' ).' ">'. $item['name']. '</a>';
+//                $result .= $this->getTreeMenuChild($item['id']);
+                $result .= $tmp;
                 $result .=  '</li>';
             }
             $result .= '</ul>';
